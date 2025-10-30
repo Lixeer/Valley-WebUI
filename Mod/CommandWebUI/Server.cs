@@ -91,7 +91,14 @@ namespace CommandWebUI
         
 
         private async Task HandleWebSocketAsync(HttpListenerContext ctx)
-        {
+        {   
+
+            if (ctx.Request.Url.AbsolutePath != "/")
+            {
+                ctx.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                ctx.Response.Close();
+                return;
+            }
             try
             {
                 var wsCtx = await ctx.AcceptWebSocketAsync(null);
@@ -106,9 +113,9 @@ namespace CommandWebUI
                     if (result.MessageType == WebSocketMessageType.Close)
                         break;
 
-                    // 接收网页端消息
+                    
                     string msg = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                    //作为控制台输入
+                   
 
                     Console.WriteLine($"[WebSocket Input] {msg}");
                     Reader.PushInput(msg);
