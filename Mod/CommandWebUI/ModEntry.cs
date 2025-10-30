@@ -14,11 +14,16 @@ namespace CommandWebUI
 
 
     public class ModEntry : Mod
-    {
+    {   
+
+        private ModConfig Config;
         private Server? server;
 
         public override void Entry(IModHelper helper)
+        
         {
+            this.Config = base.Helper.ReadConfig<ModConfig>();
+
             this.Monitor.Log("Starting embedded HTTP+WS server...", LogLevel.Info);
 
 
