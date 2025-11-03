@@ -21,13 +21,13 @@ namespace CommandWebUI
 
         private readonly WebSocketReader Reader;
 
-        public Server(IMonitor monitor, WebSocketReader reader ,int port = 27845)
+        public Server(IMonitor monitor, WebSocketReader reader ,int port)
         {
             Reader = reader;
             Port = port;
             this.monitor = monitor;
             listener = new HttpListener();
-            var _uri = $"http://127.0.0.1:{Port}";
+            var _uri = $"http://+:{Port}";
             listener.Prefixes.Add($"{_uri}/");
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Mods","CommandWebUI","index.html");
             page = File.ReadAllText(path);

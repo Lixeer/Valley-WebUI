@@ -29,7 +29,7 @@ namespace CommandWebUI
 
             var reader = new WebSocketReader();
             Console.SetIn(reader);
-            server = new Server(this.Monitor, port: 17602,reader: reader);
+            server = new Server(this.Monitor, port: 29103,reader: reader);
             
             var thread = new Thread(server.Start);
             thread.IsBackground = true;

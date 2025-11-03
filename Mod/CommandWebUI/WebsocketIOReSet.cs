@@ -4,6 +4,25 @@ using System.Text;
 
 namespace CommandWebUI;
 
+
+interface Filter
+{
+    bool IsPrint(string text);
+}
+class TraceTextFilter
+{
+    public bool IsPrint(string text){
+        if (text.Contains("TRACE game")){
+            return false;
+        }
+
+        else{
+            return true;
+        }
+    }
+}
+
+
 public class WebSocketWriter : TextWriter
 {
     private readonly Server server;
@@ -18,7 +37,10 @@ public class WebSocketWriter : TextWriter
     public override Encoding Encoding => Encoding.UTF8;
 
     public override void Write(string value)
-    {
+    {   
+        var filter = new TraceTextFilter();
+        if (!filter.IsPrint(value))
+            return;
         original.Write(value); // 保留控制台输出
         server.Broadcast(value); // 推送到网页
     }
