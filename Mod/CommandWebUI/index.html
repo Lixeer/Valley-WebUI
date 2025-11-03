@@ -48,7 +48,7 @@
     <script>
       const log = document.getElementById("log");
       const input = document.getElementById("input");
-      const ws = new WebSocket("ws://localhost:8080/");
+      const ws = new WebSocket("{{WEBSOCKET_URL}}");
 
       function appendLine(text, cls = "") {
         const line = document.createElement("div");

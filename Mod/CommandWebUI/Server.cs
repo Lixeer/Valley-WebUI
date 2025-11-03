@@ -21,15 +21,17 @@ namespace CommandWebUI
 
         private readonly WebSocketReader Reader;
 
-        public Server(IMonitor monitor, WebSocketReader reader ,int port = 8080)
+        public Server(IMonitor monitor, WebSocketReader reader ,int port = 27845)
         {
             Reader = reader;
             Port = port;
             this.monitor = monitor;
             listener = new HttpListener();
-            listener.Prefixes.Add($"http://localhost:{Port}/");
+            var _uri = $"http://127.0.0.1:{Port}";
+            listener.Prefixes.Add($"{_uri}/");
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Mods","CommandWebUI","index.html");
             page = File.ReadAllText(path);
+            page = page.Replace("{{WEBSOCKET_URL}}", "/ws");
             if (page == null)
             {
                 page = "<h1>CommandWebUI</h1>";
@@ -40,7 +42,7 @@ namespace CommandWebUI
         {
             running = true;
             listener.Start();
-            monitor.Log($"Server listening on http://localhost:{this.Port}/", LogLevel.Info);
+            monitor.Log($"Server listening on http://0.0.0.0:{this.Port}/", LogLevel.Info);
 
             while (running)
             {
@@ -93,7 +95,7 @@ namespace CommandWebUI
         private async Task HandleWebSocketAsync(HttpListenerContext ctx)
         {   
 
-            if (ctx.Request.Url.AbsolutePath != "/")
+            if (ctx.Request.Url.AbsolutePath != "/ws")
             {
                 ctx.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 ctx.Response.Close();
@@ -113,9 +115,9 @@ namespace CommandWebUI
                     if (result.MessageType == WebSocketMessageType.Close)
                         break;
 
-                    
+                    // 接收网页端消息
                     string msg = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                   
+                    //作为控制台输入
 
                     Console.WriteLine($"[WebSocket Input] {msg}");
                     Reader.PushInput(msg);

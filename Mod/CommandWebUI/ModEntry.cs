@@ -16,20 +16,20 @@ namespace CommandWebUI
     public class ModEntry : Mod
     {   
 
-        private ModConfig Config;
+        //private ModConfig Config;
         private Server? server;
 
         public override void Entry(IModHelper helper)
         
         {
-            this.Config = base.Helper.ReadConfig<ModConfig>();
+            //this.Config = base.Helper.ReadConfig<ModConfig>();
 
             this.Monitor.Log("Starting embedded HTTP+WS server...", LogLevel.Info);
 
 
             var reader = new WebSocketReader();
             Console.SetIn(reader);
-            server = new Server(this.Monitor, port: 8080,reader: reader);
+            server = new Server(this.Monitor, port: 17602,reader: reader);
             
             var thread = new Thread(server.Start);
             thread.IsBackground = true;
